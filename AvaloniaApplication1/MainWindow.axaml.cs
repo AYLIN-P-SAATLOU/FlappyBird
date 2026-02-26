@@ -22,6 +22,7 @@ public partial class MainWindow : Window
     private int _spawnCounter = 0;   
     private int _score = 0;
     private bool _isGameOver = false;
+    private bool _isGameStarted = false;
 
     private List<Rectangle> _pipes = new List<Rectangle>();
     private List<Rectangle> _countedPipes = new List<Rectangle>(); 
@@ -45,13 +46,19 @@ public partial class MainWindow : Window
     {
         if (e.Key == Key.Space && !_isGameOver)
         {
+            // The first jump starts the game
+            if (!_isGameStarted)
+            {
+                _isGameStarted = true;
+            }
+        
             _velocity = _jumpStrength; 
         }
     }
 
     private void Update(object? sender, EventArgs e)
     {
-        if (_isGameOver) return;
+        if (_isGameOver || !_isGameStarted) return;
 
         // 1. Bird Physics
         _velocity += _gravity;
@@ -150,6 +157,8 @@ public partial class MainWindow : Window
 
     public void OnRestartClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
+        _isGameStarted = false;
+        
         //1. Reset Variables
         _score = 0;
         _velocity = 0;
