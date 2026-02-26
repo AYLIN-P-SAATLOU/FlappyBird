@@ -150,24 +150,27 @@ public partial class MainWindow : Window
 
     public void OnRestartClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        // Reset Variables
+        //1. Reset Variables
         _score = 0;
         _velocity = 0;
         _spawnCounter = 0;
         _isGameOver = false;
         
+        // 2. Reset UI 
         ScoreText.Text = "0";
-        GameOverPanel.IsVisible = false;
+        GameOverPanel.IsVisible = false; 
         Canvas.SetTop(Bird, 200);
 
-        // Remove all pipes from screen
-        foreach (var pipe in _pipes)
-        {
+        // 3. Clear all pipes from the screen
+        foreach (var pipe in _pipes.ToList())
+       {
             GameCanvas.Children.Remove(pipe);
-        }
+       }
+        // 4. Empty the lists
         _pipes.Clear();
         _countedPipes.Clear();
 
+        // 5. Restart the timer
         _timer.Start();
     }
 }

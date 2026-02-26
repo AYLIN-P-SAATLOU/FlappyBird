@@ -3,8 +3,9 @@
         x:Class="AvaloniaApplication1.MainWindow"
         Title="Flappy Bird" Width="400" Height="600"
         KeyDown="OnKeyDown">
-    
+
     <Canvas Name="GameCanvas" Background="SkyBlue">
+        
         <Canvas Name="Bird" Width="50" Height="30" Canvas.Left="50" Canvas.Top="200">
             <Ellipse Fill="Yellow" Width="50" Height="30" Stroke="Black" StrokeThickness="1"/>
             
@@ -13,21 +14,27 @@
             <Ellipse Fill="Black" Width="4" Height="4" Canvas.Left="35" Canvas.Top="8"/>
             
             <Polygon Points="0,0 12,4 0,8" Fill="Orange" Stroke="Black" StrokeThickness="1" 
-                Canvas.Left="45" Canvas.Top="15"/>
+                     Canvas.Left="45" Canvas.Top="15"/>
         </Canvas>
 
-        <TextBlock Name="ScoreText" Text="0" FontSize="40" Foreground="White" 
-                   FontWeight="Bold" Canvas.Left="180" Canvas.Top="20" />
+        <TextBlock Name="ScoreText" Text="0" FontSize="50" Foreground="White" 
+                   FontWeight="Bold" Canvas.Left="180" Canvas.Top="30" ZIndex="10" />
 
-        <Border Name="GameOverPanel" IsVisible="False" Background="#AA000000" 
-                Width="400" Height="600">
+        <Border Name="GameOverPanel" IsVisible="False" Background="#CC000000" 
+                Width="400" Height="600" ZIndex="100">
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                <TextBlock Text="GAME OVER" FontSize="40" Foreground="White" HorizontalAlignment="Center"/>
-                <TextBlock Name="FinalScoreText" Text="Score: 0" FontSize="20" 
-                           Foreground="Yellow" HorizontalAlignment="Center" Margin="0,10"/>
-                <Button Content="Restart Game" Click="OnRestartClick" Padding="20,10" 
-                        HorizontalAlignment="Center" Background="White" Cursor="Hand"/>
+                <TextBlock Text="GAME OVER" FontSize="50" Foreground="Red" 
+                           FontWeight="Black" HorizontalAlignment="Center"/>
+                
+                <TextBlock Name="FinalScoreText" Text="Score: 0" FontSize="24" 
+                           Foreground="White" HorizontalAlignment="Center" Margin="0,20"/>
+                
+                <Button Content="PLAY AGAIN" Click="OnRestartClick" 
+                        Padding="30,15" FontSize="20" FontWeight="Bold"
+                        HorizontalAlignment="Center" Background="LimeGreen" 
+                        Foreground="White" Cursor="Hand"/>
             </StackPanel>
         </Border>
+        
     </Canvas>
 </Window>
