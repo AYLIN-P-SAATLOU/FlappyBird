@@ -4,9 +4,13 @@
         Title="Flappy Bird" Width="400" Height="600"
         KeyDown="OnKeyDown">
 
-    <Canvas Name="GameCanvas" Background="SkyBlue">
-        
-        <Canvas Name="Bird" Width="50" Height="30" Canvas.Left="50" Canvas.Top="200">
+    <Canvas Name="GameCanvas">
+        <Canvas.Background>
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Offset="0" Color="#1976D2"/> <GradientStop Offset="0.7" Color="#BBDEFB"/> <GradientStop Offset="1" Color="#C8E6C9"/> </LinearGradientBrush>
+        </Canvas.Background>
+
+        <Canvas Name="Bird" Width="50" Height="30" Canvas.Left="50" Canvas.Top="200" ZIndex="5">
             <Ellipse Fill="Yellow" Width="50" Height="30" Stroke="Black" StrokeThickness="1"/>
             
             <Ellipse Fill="White" Width="10" Height="10" Canvas.Left="30" Canvas.Top="5"/>
@@ -17,7 +21,7 @@
                      Canvas.Left="45" Canvas.Top="15"/>
         </Canvas>
 
-        <TextBlock Name="ScoreText" Text="0" FontSize="50" Foreground="White" 
+        <Rectangle Fill="#8B4513" Height="60" Width="400" Canvas.Bottom="0" ZIndex="2"/> <Rectangle Fill="#4CAF50" Height="50" Width="400" Canvas.Bottom="10" ZIndex="3"/> <Rectangle Fill="#2E7D32" Height="5" Width="400" Canvas.Bottom="55" ZIndex="3"/> <TextBlock Name="ScoreText" Text="0" FontSize="50" Foreground="White" 
                    FontWeight="Bold" Canvas.Left="180" Canvas.Top="30" ZIndex="10" />
 
         <Border Name="GameOverPanel" IsVisible="False" Background="#CC000000" 
@@ -35,6 +39,6 @@
                         Foreground="White" Cursor="Hand"/>
             </StackPanel>
         </Border>
-        
+    
     </Canvas>
 </Window>
