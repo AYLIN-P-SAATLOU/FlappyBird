@@ -15,7 +15,7 @@ public partial class MainWindow : Window
     // --- Physics Settings ---
     private double _gravity = 0.3;      
     private double _velocity = 0;       
-    private double _jumpStrength = -7;  
+    private double _jumpStrength = -5;  
 
     // --- Pipe Settings ---
     private double _pipeSpeed = 2.5; // How fast pipes move left
@@ -52,6 +52,7 @@ public partial class MainWindow : Window
         double birdTop = Canvas.GetTop(Bird);
         Canvas.SetTop(Bird, birdTop + _velocity);
 
+
         // 2. Pipe Spawning (Every 100 frames approx)
         _spawnCounter++;
         if (_spawnCounter > 100)
@@ -67,7 +68,7 @@ public partial class MainWindow : Window
             Canvas.SetLeft(pipe, currentLeft - _pipeSpeed);
 
             // Remove pipe if it goes off screen to save memory
-            if (currentLeft < -60)
+            if (currentLeft < -70)
             {
                 GameCanvas.Children.Remove(pipe);
                 _pipes.Remove(pipe);
@@ -83,7 +84,7 @@ public partial class MainWindow : Window
 
     private void CreatePipePair()
     {
-        double gapHeight = 180; // The space the bird flies through
+        double gapHeight = 180; 
         double pipeWidth = 70;
         double randomY = _random.Next(50, (int)(this.Height - gapHeight - 50));
 

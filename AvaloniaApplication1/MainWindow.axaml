@@ -5,9 +5,11 @@
         KeyDown="OnKeyDown">
     
     <Canvas Name="GameCanvas" Background="SkyBlue">
-        <Rectangle Name="Bird" 
-                   Fill="Yellow" 
-                   Width="40" Height="30" 
-                   Canvas.Left="50" Canvas.Top="200"/>
+    <Ellipse Name="Bird" 
+             Fill="Yellow" 
+             Stroke="Black" 
+             StrokeThickness="1.5"
+             Width="34" Height="34" 
+             Canvas.Left="50" Canvas.Top="200"/>
     </Canvas>
 </Window>
