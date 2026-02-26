@@ -5,11 +5,15 @@
         KeyDown="OnKeyDown">
     
     <Canvas Name="GameCanvas" Background="SkyBlue">
-    <Ellipse Name="Bird" 
-             Fill="Yellow" 
-             Stroke="Black" 
-             StrokeThickness="1.5"
-             Width="34" Height="34" 
-             Canvas.Left="50" Canvas.Top="200"/>
+        <Canvas Name="Bird" Width="50" Height="30" Canvas.Left="50" Canvas.Top="200">
+            <Ellipse Fill="Yellow" Width="50" Height="30" Stroke="Black" StrokeThickness="1"/>
+            
+            <Ellipse Fill="White" Width="10" Height="10" Canvas.Left="30" Canvas.Top="5"/>
+            
+            <Ellipse Fill="Black" Width="4" Height="4" Canvas.Left="35" Canvas.Top="8"/>
+            
+            <Polygon Points="0,0 12,4 0,8" Fill="Orange" Stroke="Black" StrokeThickness="1" 
+                Canvas.Left="45" Canvas.Top="15"/>
+        </Canvas>
     </Canvas>
 </Window>

@@ -50,6 +50,7 @@ public partial class MainWindow : Window
         // 1. Bird Physics
         _velocity += _gravity;
         double birdTop = Canvas.GetTop(Bird);
+        double birdLeft = Canvas.GetLeft(Bird);
         Canvas.SetTop(Bird, birdTop + _velocity);
 
 
@@ -61,14 +62,30 @@ public partial class MainWindow : Window
             _spawnCounter = 0;
         }
 
-        // 3. Move Pipes
+        // 3. Move Pipes and Check Collisions
         foreach (var pipe in _pipes.ToList())
         {
-            double currentLeft = Canvas.GetLeft(pipe);
-            Canvas.SetLeft(pipe, currentLeft - _pipeSpeed);
+            double pipeLeft = Canvas.GetLeft(pipe);
+            double pipeTop = Canvas.GetTop(pipe);
+            double pipeRight = pipeLeft + pipe.Width;
+            double pipeBottom = pipeTop + pipe.Height;
+            
+            Canvas.SetLeft(pipe, pipeLeft - _pipeSpeed);
 
+            double birdRight = birdLeft + 50; 
+            double birdBottom = birdTop + 30;
+
+            bool intersectsX = birdRight > pipeLeft && birdLeft < pipeRight;
+            bool intersectsY = birdBottom > pipeTop && birdTop < pipeBottom;
+
+            if (intersectsX && intersectsY)
+            {
+                ResetGame();
+                return;
+            }
+            
             // Remove pipe if it goes off screen to save memory
-            if (currentLeft < -70)
+            if (pipeLeft < -100)
             {
                 GameCanvas.Children.Remove(pipe);
                 _pipes.Remove(pipe);
@@ -76,7 +93,7 @@ public partial class MainWindow : Window
         }
 
         // 4. Floor Check
-        if (birdTop > this.Height)
+        if (birdTop > this.Height || birdTop < 0)
         {
             ResetGame();
         }
@@ -96,7 +113,7 @@ public partial class MainWindow : Window
             Fill = Brushes.Green,
             Stroke = Brushes.Black,
             StrokeThickness = 2,
-            [Canvas.LeftProperty] = 400,
+            [Canvas.LeftProperty] = 450,
             [Canvas.TopProperty] = 0
         };
 
@@ -108,7 +125,7 @@ public partial class MainWindow : Window
             Fill = Brushes.Green,
             Stroke = Brushes.Black,
             StrokeThickness = 2,
-            [Canvas.LeftProperty] = 400,
+            [Canvas.LeftProperty] = 450,
             [Canvas.TopProperty] = randomY + gapHeight
         };
 
@@ -124,10 +141,11 @@ public partial class MainWindow : Window
         Canvas.SetTop(Bird, 200);
 
         // Clear pipes when resetting
-        foreach (var pipe in _pipes)
+        foreach (var pipe in _pipes.ToList())
         {
             GameCanvas.Children.Remove(pipe);
         }
         _pipes.Clear();
+        _spawnCounter = 0;
     }
 }
