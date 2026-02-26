@@ -17,10 +17,14 @@ public partial class MainWindow : Window
     private double _velocity = 0;       
     private double _jumpStrength = -5;  
 
-    // --- Pipe Settings ---
-    private double _pipeSpeed = 2.5; // How fast pipes move left
-    private int _spawnCounter = 0;   // Counts frames to know when to spawn
+    // --- Game State ---
+    private double _pipeSpeed = 2.5; 
+    private int _spawnCounter = 0;   
+    private int _score = 0;
+    private bool _isGameOver = false;
+
     private List<Rectangle> _pipes = new List<Rectangle>();
+    private List<Rectangle> _countedPipes = new List<Rectangle>(); 
 
     private DispatcherTimer _timer;
     private Random _random = new Random();
@@ -39,7 +43,7 @@ public partial class MainWindow : Window
 
     private void OnKeyDown(object? sender, KeyEventArgs e)
     {
-        if (e.Key == Key.Space)
+        if (e.Key == Key.Space && !_isGameOver)
         {
             _velocity = _jumpStrength; 
         }
@@ -47,14 +51,15 @@ public partial class MainWindow : Window
 
     private void Update(object? sender, EventArgs e)
     {
+        if (_isGameOver) return;
+
         // 1. Bird Physics
         _velocity += _gravity;
         double birdTop = Canvas.GetTop(Bird);
         double birdLeft = Canvas.GetLeft(Bird);
         Canvas.SetTop(Bird, birdTop + _velocity);
 
-
-        // 2. Pipe Spawning (Every 100 frames approx)
+        // 2. Pipe Spawning
         _spawnCounter++;
         if (_spawnCounter > 100)
         {
@@ -62,40 +67,52 @@ public partial class MainWindow : Window
             _spawnCounter = 0;
         }
 
-        // 3. Move Pipes and Check Collisions
+        // 3. Move Pipes & Logic
         foreach (var pipe in _pipes.ToList())
         {
             double pipeLeft = Canvas.GetLeft(pipe);
             double pipeTop = Canvas.GetTop(pipe);
-            double pipeRight = pipeLeft + pipe.Width;
-            double pipeBottom = pipeTop + pipe.Height;
-            
             Canvas.SetLeft(pipe, pipeLeft - _pipeSpeed);
 
+            // --- SCORE CALCULATION ---
+            if (pipeLeft + pipe.Width < birdLeft && !_countedPipes.Contains(pipe))
+            {
+                _countedPipes.Add(pipe);
+                if (_countedPipes.Count % 2 == 0)
+                {
+                    _score++;
+                    ScoreText.Text = _score.ToString();
+                }
+            }
+
+            //MANUAL COLLISION
             double birdRight = birdLeft + 50; 
             double birdBottom = birdTop + 30;
+            double pipeRight = pipeLeft + pipe.Width;
+            double pipeBottom = pipeTop + pipe.Height;
 
             bool intersectsX = birdRight > pipeLeft && birdLeft < pipeRight;
             bool intersectsY = birdBottom > pipeTop && birdTop < pipeBottom;
 
             if (intersectsX && intersectsY)
             {
-                ResetGame();
+                EndGame();
                 return;
             }
-            
-            // Remove pipe if it goes off screen to save memory
+
+            // Clean up off-screen pipes
             if (pipeLeft < -100)
             {
                 GameCanvas.Children.Remove(pipe);
                 _pipes.Remove(pipe);
+                _countedPipes.Remove(pipe);
             }
         }
 
-        // 4. Floor Check
+        // 4. Floor/Ceiling Check
         if (birdTop > this.Height || birdTop < 0)
         {
-            ResetGame();
+            EndGame();
         }
     }
 
@@ -105,28 +122,16 @@ public partial class MainWindow : Window
         double pipeWidth = 70;
         double randomY = _random.Next(50, (int)(this.Height - gapHeight - 50));
 
-        // Top Pipe
-        Rectangle topPipe = new Rectangle
-        {
-            Width = pipeWidth,
-            Height = randomY,
-            Fill = Brushes.Green,
-            Stroke = Brushes.Black,
-            StrokeThickness = 2,
-            [Canvas.LeftProperty] = 450,
-            [Canvas.TopProperty] = 0
+        Rectangle topPipe = new Rectangle {
+            Width = pipeWidth, Height = randomY,
+            Fill = Brushes.Green, Stroke = Brushes.Black, StrokeThickness = 2,
+            [Canvas.LeftProperty] = 450, [Canvas.TopProperty] = 0
         };
 
-        // Bottom Pipe
-        Rectangle bottomPipe = new Rectangle
-        {
-            Width = pipeWidth,
-            Height = this.Height - randomY - gapHeight,
-            Fill = Brushes.Green,
-            Stroke = Brushes.Black,
-            StrokeThickness = 2,
-            [Canvas.LeftProperty] = 450,
-            [Canvas.TopProperty] = randomY + gapHeight
+        Rectangle bottomPipe = new Rectangle {
+            Width = pipeWidth, Height = this.Height - randomY - gapHeight,
+            Fill = Brushes.Green, Stroke = Brushes.Black, StrokeThickness = 2,
+            [Canvas.LeftProperty] = 450, [Canvas.TopProperty] = randomY + gapHeight
         };
 
         _pipes.Add(topPipe);
@@ -135,17 +140,34 @@ public partial class MainWindow : Window
         GameCanvas.Children.Add(bottomPipe);
     }
 
-    private void ResetGame()
+    private void EndGame()
     {
+        _isGameOver = true;
+        _timer.Stop();
+        FinalScoreText.Text = $"Final Score: {_score}";
+        GameOverPanel.IsVisible = true;
+    }
+
+    public void OnRestartClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        // Reset Variables
+        _score = 0;
         _velocity = 0;
+        _spawnCounter = 0;
+        _isGameOver = false;
+        
+        ScoreText.Text = "0";
+        GameOverPanel.IsVisible = false;
         Canvas.SetTop(Bird, 200);
 
-        // Clear pipes when resetting
-        foreach (var pipe in _pipes.ToList())
+        // Remove all pipes from screen
+        foreach (var pipe in _pipes)
         {
             GameCanvas.Children.Remove(pipe);
         }
         _pipes.Clear();
-        _spawnCounter = 0;
+        _countedPipes.Clear();
+
+        _timer.Start();
     }
 }
