@@ -15,7 +15,7 @@ public partial class MainWindow : Window
     // --- Physics Settings ---
     private double _gravity = 0.3;      
     private double _velocity = 0;       
-    private double _jumpStrength = -9;  
+    private double _jumpStrength = -7;  
 
     // --- Pipe Settings ---
     private double _pipeSpeed = 2.5; // How fast pipes move left
@@ -83,8 +83,8 @@ public partial class MainWindow : Window
 
     private void CreatePipePair()
     {
-        double gapHeight = 150; // The space the bird flies through
-        double pipeWidth = 50;
+        double gapHeight = 180; // The space the bird flies through
+        double pipeWidth = 70;
         double randomY = _random.Next(50, (int)(this.Height - gapHeight - 50));
 
         // Top Pipe
@@ -93,6 +93,8 @@ public partial class MainWindow : Window
             Width = pipeWidth,
             Height = randomY,
             Fill = Brushes.Green,
+            Stroke = Brushes.Black,
+            StrokeThickness = 2,
             [Canvas.LeftProperty] = 400,
             [Canvas.TopProperty] = 0
         };
@@ -103,6 +105,8 @@ public partial class MainWindow : Window
             Width = pipeWidth,
             Height = this.Height - randomY - gapHeight,
             Fill = Brushes.Green,
+            Stroke = Brushes.Black,
+            StrokeThickness = 2,
             [Canvas.LeftProperty] = 400,
             [Canvas.TopProperty] = randomY + gapHeight
         };
